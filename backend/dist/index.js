@@ -4,29 +4,41 @@ let users = [];
 wss.on("connection", (ws) => {
     ws.on("message", (message) => {
         const parsedData = JSON.parse(message.toString());
-        if (parsedData.type === "create") {
-            const newUser = {
-                ws,
-                username: parsedData.username || "Anonymous",
-                roomId: parsedData.roomId,
-            };
-            users.push(newUser);
-            console.log(`${newUser.username} created room ${newUser.roomId}`);
-        }
-        else if (parsedData.type === "join") {
-            const user = users.find((u) => u.ws === ws);
+        if (parsedData.type === "join") {
+            let user = users.find((u) => u.ws === ws);
             if (user) {
                 user.roomId = parsedData.roomId;
-                console.log(`${user.username} joined room ${parsedData.roomId}`);
+                user.username = parsedData.username || user.username;
             }
             else {
-                users.push({
+                user = {
                     ws,
                     username: parsedData.username || "Anonymous",
                     roomId: parsedData.roomId,
-                });
-                console.log(`${parsedData.username} joined room ${parsedData.roomId}`);
+                };
+                users.push(user);
             }
+            console.log(`${user.username} joined room ${user.roomId}`);
+            ws.send(JSON.stringify({
+                type: "system",
+                event: "joined",
+                roomId: user.roomId,
+                username: user.username,
+                message: `You joined room ${user.roomId}`
+            }));
+            users
+                .filter(u => u.roomId === user.roomId && u.ws !== ws)
+                .forEach(u => {
+                if (u.ws.readyState === WebSocket.OPEN) {
+                    u.ws.send(JSON.stringify({
+                        type: "system",
+                        event: "user_joined",
+                        roomId: user.roomId,
+                        username: user.username,
+                        message: `${user.username} joined the room`
+                    }));
+                }
+            });
         }
         else if (parsedData.type === "chat") {
             const roomUsers = users.filter((u) => u.roomId === parsedData.roomId);
@@ -41,10 +53,43 @@ wss.on("connection", (ws) => {
                 }
             });
         }
+        else if (parsedData.type === "leave") {
+            users = users.filter((u) => u.ws !== ws);
+            console.log(`${parsedData.username} left room ${parsedData.roomId}`);
+            users
+                .filter(u => u.roomId === parsedData.roomId)
+                .forEach(u => {
+                if (u.ws.readyState === WebSocket.OPEN) {
+                    u.ws.send(JSON.stringify({
+                        type: "system",
+                        event: "user_left",
+                        roomId: parsedData.roomId,
+                        username: parsedData.username,
+                        message: `${parsedData.username} left the room`
+                    }));
+                }
+            });
+        }
     });
     ws.on("close", () => {
-        users = users.filter((u) => u.ws !== ws);
-        console.log("User disconnected");
+        const user = users.find((u) => u.ws === ws);
+        if (user) {
+            console.log(`${user.username} disconnected`);
+            users = users.filter((u) => u.ws !== ws);
+            users
+                .filter(u => u.roomId === user.roomId)
+                .forEach(u => {
+                if (u.ws.readyState === WebSocket.OPEN) {
+                    u.ws.send(JSON.stringify({
+                        type: "system",
+                        event: "user_left",
+                        roomId: user.roomId,
+                        username: user.username,
+                        message: `${user.username} disconnected`
+                    }));
+                }
+            });
+        }
     });
 });
 //# sourceMappingURL=index.js.map
