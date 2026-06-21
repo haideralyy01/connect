@@ -40,7 +40,7 @@ export default function Chat() {
 
   useEffect(() => {
     // Setup WebSocket connection
-    const socket = new WebSocket(`wss://api.connect.haideralyy01.dev/chat?username=${username}&roomId=${roomId}`);
+    const socket = new WebSocket('wss://api.connect.haideralyy01.dev');
     socket.onopen = () => {
         console.log("Connected to WebSocket server");
         socket.send(JSON.stringify({ type: "join", roomId, username }));
