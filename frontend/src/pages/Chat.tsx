@@ -16,7 +16,7 @@ interface Message {
   timestamp: Date;
 }
 
-const backendUrl: string = process.env.NEXT_PUBLIC_BACKEND_URL ?? ""
+const backendUrl: string = process.env.BACKEND_URL ?? ""
 
 export default function Chat() {
   const [searchParams] = useSearchParams();
