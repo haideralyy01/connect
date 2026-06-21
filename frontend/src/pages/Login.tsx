@@ -119,7 +119,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={!username.trim() || !roomId.trim() || loading}
-              className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-semibold py-3 rounded-xl hover:from-violet-500 hover:to-indigo-500 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 disabled:hover:shadow-violet-500/20 cursor-pointer text-sm"
+              className="w-full flex items-center justify-center gap-2.5 bg-to-r from-violet-600 to-indigo-600 text-white font-semibold py-3 rounded-xl hover:from-violet-500 hover:to-indigo-500 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 disabled:hover:shadow-violet-500/20 cursor-pointer text-sm"
             >
               {loading ? (
                 <>
@@ -136,9 +136,9 @@ export default function Login() {
           </form>
 
           {/* Footer */}
-          <div className="mt-8 pt-6 border-t border-white/[0.06]">
+          <div className="mt-8 pt-6 border-t border-white/6">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 mt-0.5">
+              <div className="shrink-0 mt-0.5">
                 <SparkleIcon className="w-4 h-4 text-violet-400/60" />
               </div>
               <div>
@@ -149,7 +149,7 @@ export default function Login() {
               </div>
             </div>
             <div className="flex items-start gap-3 mt-3">
-              <div className="flex-shrink-0 mt-0.5">
+              <div className="shrink-0 mt-0.5">
                 <LinkIcon className="w-4 h-4 text-violet-400/60" />
               </div>
               <div>

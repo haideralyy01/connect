@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import 'dotenv'
 import {
   ChatBubbleIcon,
   HashIcon,
@@ -15,8 +14,6 @@ interface Message {
   text: string;
   timestamp: Date;
 }
-
-const backendUrl: string = process.env.NEXT_PUBLIC_BACKEND_URL ?? ""
 
 export default function Chat() {
   const [searchParams] = useSearchParams();
@@ -43,7 +40,7 @@ export default function Chat() {
 
   useEffect(() => {
     // Setup WebSocket connection
-    const socket = new WebSocket(backendUrl);
+    const socket = new WebSocket(`wss://api.connect.haideralyy01.dev/chat?username=${username}&roomId=${roomId}`);
     socket.onopen = () => {
         console.log("Connected to WebSocket server");
         socket.send(JSON.stringify({ type: "join", roomId, username }));
@@ -259,4 +256,4 @@ export default function Chat() {
       </div>
     </div>
   );
-};
+}
