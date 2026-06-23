@@ -1,6 +1,16 @@
 import { WebSocket, WebSocketServer } from "ws";
+import { createServer } from "http";
 
-const wss = new WebSocketServer({ port: 8080 });
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+
+const server = createServer((req, res) => {
+  res.writeHead(200);
+  res.end("Chat server is running!");
+});
+
+const wss = new WebSocketServer({ server });
+
+
 
 interface User {
   ws: WebSocket;
@@ -108,4 +118,8 @@ wss.on("connection", (ws) => {
         });
     }
   });
+});
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
